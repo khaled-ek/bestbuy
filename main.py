@@ -1,16 +1,75 @@
-# This is a sample Python script.
+from products import Product
+from store import Store
+from colorama import Fore
 
-# Press Ctrl+F5 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+def list_store_products(store):
+    products = store.get_all_products()
+    print("------")
+    for indx in range(len(products)):
+        print(str(indx+ 1) + ". " + products[indx].to_string())
+    print("------")
+
+def add_to_order_list(order_tuple_list, product, quantity):
+    found = False
+    for tpl in order_tuple_list:
+        if tpl[0].get_name() == product.get_name():
+            tpl[1] += quantity
+            found = True
+    if not found:
+        order_tuple_list.append((product, quantity))
+
+def get_order_data(store, order_tuple_list):
+    list_store_products(store)
+    print("When you want to finish order, enter empty text.")
+    product_indx = input("Which product # do you want? ")
+    quantity = input("What amount do you want?  ")
+    if product_indx != "" and quantity != "":
+        add_to_order_list(order_tuple_list, store.get_all_products()[int(product_indx) - 1], int(quantity))
+        get_order_data(store, order_tuple_list)
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press F9 to toggle the breakpoint.
+
+def start (store):
+    print ("    Store Menu")
+    print ("    ----------")
+    print ("1. List all products in store")
+    print ("2. Show total amount in store")
+    print ("3. Make an order")
+    print ("4. Quit")
+    choice = input("Please choose a number: ")
+    if choice == "1":
+        list_store_products(store)
+        print()
+        start(store)
+    elif choice == "2":
+        print("Total of " + str(len(store.get_total_quantity())) + " items in store")
+        print()
+        start(store)
+    elif choice == "3":
+        try:
+            order_tuple_list = []
+            get_order_data(store, order_tuple_list)
+            total_payment = store.order(order_tuple_list)
+            print("Order made! Total payment: $" + str(total_payment))
+            print()
+            start(store)
+        except ValueError as err:
+            print(Fore.RED + err.__str__())
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+
+
+
+
+try:
+    product_list = [ Product("MacBook Air M2", price=1450, quantity=100),
+                 Product("Bose QuietComfort Earbuds", price=250, quantity=500),
+                 Product("Google Pixel 7", price=500, quantity=250)
+               ]
+    best_buy = Store(product_list)
+
+    start(best_buy)
+except ValueError as error:
+    print (error)

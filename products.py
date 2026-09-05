@@ -27,7 +27,10 @@ class Product:
     def deactivate(self):
         self.active = False
     def show(self):
-        print("\"", self.name, "price", self.price, "quantity", self.quantity, "\"")
+        print(self.name, ", price: $", self.price, ", quantity: ", self.quantity)
+
+    def to_string(self) -> str:
+        return str(self.name) + ", price: $" + str(self.price) +  ", quantity: " + str (self.quantity)
 
     def buy(self, quantity) -> float :
         if quantity < 0:
