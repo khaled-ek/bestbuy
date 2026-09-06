@@ -36,7 +36,7 @@ class Product:
         if quantity < 0:
             raise ValueError("Quantity must be greater than 0")
         elif quantity > self.quantity:
-            raise ValueError("Only" + self.quantity + " are available, we cannot provide the requested quantity")
+            raise ValueError("You ordered " + str(quantity) + " from the \"" + self.name + "\" Only " + str(self.quantity) + " are available, we cannot provide the requested quantity")
         else:
             self.quantity -= quantity
             return self.price * quantity

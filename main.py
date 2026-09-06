@@ -10,22 +10,23 @@ def list_store_products(store):
     print("------")
 
 def add_to_order_list(order_tuple_list, product, quantity):
-    found = False
-    for tpl in order_tuple_list:
-        if tpl[0].get_name() == product.get_name():
-            tpl[1] += quantity
-            found = True
-    if not found:
-        order_tuple_list.append((product, quantity))
+    order_tuple_list.append((product, quantity))
 
 def get_order_data(store, order_tuple_list):
-    list_store_products(store)
-    print("When you want to finish order, enter empty text.")
+
     product_indx = input("Which product # do you want? ")
     quantity = input("What amount do you want?  ")
     if product_indx != "" and quantity != "":
-        add_to_order_list(order_tuple_list, store.get_all_products()[int(product_indx) - 1], int(quantity))
-        get_order_data(store, order_tuple_list)
+        if product_indx.isdigit() and quantity.isdigit():
+            if (int(product_indx) - 1) in range(len(store.products_list)):
+                add_to_order_list(order_tuple_list, store.get_all_products()[int(product_indx) - 1], int(quantity))
+                print("Product added to list!")
+                print()
+                get_order_data(store, order_tuple_list)
+                return
+            print("Error adding product!")
+            print()
+            get_order_data(store, order_tuple_list)
 
 
 
@@ -37,24 +38,38 @@ def start (store):
     print ("3. Make an order")
     print ("4. Quit")
     choice = input("Please choose a number: ")
-    if choice == "1":
-        list_store_products(store)
-        print()
-        start(store)
-    elif choice == "2":
-        print("Total of " + str(len(store.get_total_quantity())) + " items in store")
-        print()
-        start(store)
-    elif choice == "3":
-        try:
-            order_tuple_list = []
-            get_order_data(store, order_tuple_list)
-            total_payment = store.order(order_tuple_list)
-            print("Order made! Total payment: $" + str(total_payment))
+    if choice.isdigit():
+        if choice == "1":
+            list_store_products(store)
             print()
             start(store)
-        except ValueError as err:
-            print(Fore.RED + err.__str__())
+        elif choice == "2":
+            print("Total of " + str(store.get_total_quantity()) + " items in store")
+            print()
+            start(store)
+        elif choice == "3":
+            try:
+                order_tuple_list = []
+                list_store_products(store)
+                print("When you want to finish order, enter empty text.")
+                get_order_data(store, order_tuple_list)
+                total_payment = store.order(order_tuple_list)
+                print("Order made! Total payment: $" + str(total_payment))
+                print()
+                start(store)
+            except ValueError as err:
+                print(Fore.RED + err.__str__())
+        elif choice == "4":
+            exit(0)
+        else:
+            print()
+            start(store)
+    else:
+        print ("Error with your choice! Try again!")
+        print()
+        start(store)
+
+
 
 
 
