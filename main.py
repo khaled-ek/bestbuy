@@ -5,8 +5,8 @@ from colorama import Fore
 def list_store_products(store):
     products = store.get_all_products()
     print("------")
-    for indx in range(len(products)):
-        print(str(indx+ 1) + ". " + products[indx].to_string())
+    for indx, prod in enumerate(products):
+        print(str(indx+ 1) + ". " + prod.to_string())
     print("------")
 
 def add_to_order_list(order_tuple_list, product, quantity):
@@ -18,7 +18,7 @@ def get_order_data(store, order_tuple_list):
     quantity = input("What amount do you want?  ")
     if product_indx != "" and quantity != "":
         if product_indx.isdigit() and quantity.isdigit():
-            if (int(product_indx) - 1) in range(len(store.products_list)):
+            if int(product_indx) - 1 in range(len(store.products_list)):
                 add_to_order_list(order_tuple_list, store.get_all_products()[int(product_indx) - 1], int(quantity))
                 print("Product added to list!")
                 print()
